@@ -213,7 +213,7 @@ class Tratamento(models.Model):
         return self.values(('animal', 'doenca'), ('data_inicio', 'data_fim'))
 
     def get_procedimentos(self):
-        return self.procedimento_set.ignore('tratamento').global_actions('RegistrarProcedimento').actions('edit').totalizer('tipo__valor')
+        return self.procedimento_set.ignore('tratamento').global_actions('RegistrarProcedimento').actions('edit').totalizer('tipo__valor').template('adm/queryset/timeline')
 
     def get_eficacia(self):
         return self.values('eficaz').actions('FinalizarTratamento')
