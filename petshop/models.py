@@ -169,11 +169,11 @@ class Animal(models.Model):
     def get_tratamentos(self):
         return self.tratamento_set.ignore('animal').global_actions('IniciarTratamento').template('adm/queryset/accordion').actions('ExcluirTratamento')
 
-    def get_procedimentos_por_tipo(self):
-        return self.tratamento_set.count('procedimento__tipo').bar_chart()
+    def get_tratamentos_por_doenca(self):
+        return self.tratamento_set.count('doenca').donut_chart()
 
     def view(self):
-        return self.values('get_dados_gerais', 'get_proprietario', 'get_tratamentos', 'get_procedimentos_por_tipo',)
+        return self.values('get_dados_gerais', 'get_proprietario', 'get_tratamentos', 'get_tratamentos_por_doenca',)
 
     def has_permission(self, user):
         return user.is_superuser or user.roles.contains('Funcionário')
@@ -215,11 +215,14 @@ class Tratamento(models.Model):
     def get_procedimentos(self):
         return self.procedimento_set.ignore('tratamento').global_actions('RegistrarProcedimento').actions('edit').totalizer('tipo__valor').template('adm/queryset/timeline')
 
+    def get_procedimentos_por_tipo(self):
+        return self.procedimento_set.count('tipo').bar_chart()
+
     def get_eficacia(self):
         return self.values('eficaz').actions('FinalizarTratamento')
 
     def view(self):
-        return self.values('get_dados_gerais', 'get_procedimentos', 'get_eficacia')
+        return self.values('get_dados_gerais', 'get_procedimentos_por_tipo', 'get_procedimentos', 'get_eficacia')
 
     def has_view_permission(self, user):
         return user.roles.contains('Funcionário') or self.animal.proprietario.cpf == user.username
