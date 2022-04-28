@@ -37,6 +37,7 @@ class Doenca(models.Model):
     objects = DoencaManager()
 
     class Meta:
+        icon = 'book'
         verbose_name = 'Doença'
         verbose_name_plural = 'Doenças'
 
@@ -100,6 +101,7 @@ class Cliente(models.Model):
     cpf = models.CharField(verbose_name='CPF')
 
     class Meta:
+        icon = 'person-lines-fill'
         verbose_name = 'Cliente'
         verbose_name_plural = 'Clientes'
 
@@ -145,6 +147,7 @@ class Animal(models.Model):
     objects = AnimalManager()
 
     class Meta:
+        icon = 'github'
         verbose_name = 'Animal'
         verbose_name_plural = 'Animais'
         fieldsets = {
@@ -167,7 +170,15 @@ class Animal(models.Model):
         return self.proprietario.values(('nome', 'cpf'))
 
     def get_tratamentos(self):
-        return self.tratamento_set.ignore('animal').global_actions('IniciarTratamento').template('adm/queryset/accordion').actions('ExcluirTratamento')
+        return self.tratamento_set.ignore(
+            'animal'
+        ).global_actions(
+            'IniciarTratamento'
+        ).template(
+            'adm/queryset/accordion'
+        ).actions(
+            'ExcluirTratamento'
+        )
 
     def get_tratamentos_por_doenca(self):
         return self.tratamento_set.count('doenca').donut_chart()
