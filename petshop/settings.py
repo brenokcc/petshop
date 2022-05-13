@@ -66,7 +66,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'sloth.core.views.context_processor'
             ],
         },
     },
@@ -167,5 +166,8 @@ SLOTH = {
 	'INCLUDE': {
 		'CSS': [],
 		'JS': [],
+	},
+	'ROLES':{
+		'ALLOW_MULTIPLE': True
 	}
 }
