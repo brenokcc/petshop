@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
-from sloth.db import models
-from sloth.decorators import role, verbose_name, renderer
+from sloth.db import models, role, meta
 
 
 @role('Administrador', 'cpf')
@@ -48,7 +47,7 @@ class Doenca(models.Model):
         return self.descricao
 
     def has_permission(self, user):
-        return user.roles.contains('Administrador')
+        return user.is_superuser or user.roles.contains('Administrador')
 
 
 class TipoProcedimento(models.Model):
@@ -64,7 +63,7 @@ class TipoProcedimento(models.Model):
         return self.descricao
 
     def has_permission(self, user):
-        return user.roles.contains('Administrador')
+        return user.is_superuser or user.roles.contains('Administrador')
 
 
 class TipoAnimal(models.Model):
@@ -78,7 +77,7 @@ class TipoAnimal(models.Model):
         return self.descricao
 
     def has_permission(self, user):
-        return user.roles.contains('Administrador')
+        return user.is_superuser or user.roles.contains('Administrador')
 
 
 @role('Funcionário', 'cpf')
@@ -95,7 +94,7 @@ class Funcionario(models.Model):
         return self.nome
 
     def has_permission(self, user):
-        return user.roles.contains('Administrador')
+        return user.is_superuser or user.roles.contains('Administrador')
 
 
 @role('Cliente', 'cpf')
@@ -116,7 +115,7 @@ class Cliente(models.Model):
         return self.nome
 
     def has_permission(self, user):
-        return user.roles.contains('Funcionário')
+        return user.is_superuser or user.roles.contains('Funcionário')
 
     def get_dados_gerais(self):
         return self.values(('nome', 'cpf'))
@@ -171,7 +170,7 @@ class Animal(models.Model):
     def __str__(self):
         return self.nome
 
-    @renderer('utils/badge')
+    @meta('Situação', 'utils/badge')
     def get_situacao(self):
         if self.get_tratamentos().filter(data_fim__isnull=True).exists():
             return 'warning', 'Em Tratamento'
@@ -205,7 +204,7 @@ class Animal(models.Model):
         return self.proprietario.cpf == user.username
 
     def has_list_permission(self, user):
-        return user.roles.contains('Cliente')
+        return user.is_superuser or user.roles.contains('Cliente')
 
 
 class TratamentoManager(models.Manager):
@@ -238,7 +237,7 @@ class Tratamento(models.Model):
     def __str__(self):
         return '{} - Tratamento de {} contra {}'.format(self.id, self.animal, self.doenca)
 
-    @renderer('utils/steps')
+    @meta('Etapas', 'utils/steps')
     def get_etapas(self):
         etapas = []
         etapas.append(('Início', self.data_inicio))
@@ -266,16 +265,16 @@ class Tratamento(models.Model):
         return self.values('get_dados_gerais', 'get_procedimentos_por_tipo', 'get_procedimentos', 'get_eficacia').append('get_dados_etapas')
 
     def has_view_permission(self, user):
-        return user.roles.contains('Funcionário') or self.animal.proprietario.cpf == user.username
+        return user.is_superuser or user.roles.contains('Funcionário') or self.animal.proprietario.cpf == user.username
 
     def has_edit_permission(self, user):
-        return user.roles.contains('Funcionário') and not self.procedimento_set.exists()
+        return user.is_superuser or user.roles.contains('Funcionário') and not self.procedimento_set.exists()
 
     def has_delete_permission(self, user):
         return self.has_edit_permission(user)
 
     def has_list_permission(self, user):
-        return user.roles.contains('Funcionário')
+        return user.is_superuser or user.roles.contains('Funcionário')
 
 
 class ProcedimentoManager(models.Manager):
@@ -306,4 +305,4 @@ class Procedimento(models.Model):
         return 'Tratamento {}'.format(self.id)
 
     def has_edit_permission(self, user):
-        return user.roles.contains('Funcionário') and self.tratamento and self.tratamento.eficaz is None
+        return user.is_superuser or user.roles.contains('Funcionário') and self.tratamento and self.tratamento.eficaz is None
