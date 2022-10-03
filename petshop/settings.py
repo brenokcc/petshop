@@ -27,6 +27,9 @@ SECRET_KEY = 'django-insecure-@wex+s-m33v5m=$@a_a64*(ped0p(ud-vkv@#jo7+!s@8^(ess
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
+SITE_URL = 'http://localhost:8000'
+CSRF_TRUSTED_ORIGINS = ['https://petshop.aplicativo.space', 'http://s1.localhost']
+SITE_URL = CSRF_TRUSTED_ORIGINS[0]
 
 
 # Application definition
@@ -153,16 +156,6 @@ SLOTH = {
 		'TEXT': None,
 		'IMAGE': None,
 	},
-	'HEADER': {
-		'LOGO': None,
-		'TITLE': 'PetShop',
-		'TEXT': None,
-	},
-	'FOOTER': {
-		'TITLE': '© 2022 Petshop',
-		'TEXT': 'Todos os direitos reservados',
-		'LINKS': [],
-	},
 	'INCLUDE': {
 		'CSS': [
             # '/static/themes/endless.css'
@@ -171,5 +164,11 @@ SLOTH = {
 	},
 	'ROLES':{
 		'ALLOW_MULTIPLE': True
-	}
+	},
+    'DEFAULT_PASSWORD': lambda user=None: '123',
+	'FORCE_PASSWORD_DEFINITION': False,
+    'SSL': (
+        '/etc/letsencrypt/live/aplicativo.space/fullchain.pem',
+        '/etc/letsencrypt/live/aplicativo.space/privkey.pem'
+    )
 }

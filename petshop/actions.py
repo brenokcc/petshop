@@ -1,3 +1,5 @@
+import json
+
 from sloth import actions
 from .models import Tratamento, Procedimento
 
@@ -46,3 +48,20 @@ class FinalizarTratamento(actions.Action):
 
     def has_permission(self, user):
         return self.instance.procedimento_set.exists() and self.instance.eficaz is None
+
+
+class Batata(actions.Action):
+
+    class Meta:
+        style = 'success'
+
+    def has_permission(self, user):
+        return True
+
+    def submit(self):
+        from pywebpush import webpush
+        super(Batata, self).submit()
+        webpush(subscription_info=json.loads(self.request.user.push_notification.subscription),
+                data="Hello World!",
+                vapid_private_key="GoFJpuTAdhepzfxOHdrW7u2ONh7V8ZIjPkjgpWSS3ks",
+                vapid_claims={"sub": "mailto:admin@admin.com"})
