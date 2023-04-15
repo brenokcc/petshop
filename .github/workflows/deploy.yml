@@ -12,4 +12,4 @@ jobs:
         env:
           TOKEN: ${{ secrets.TOKEN }}
         run: |
-          echo curl -X POST http://deploy.cloud.aplicativo.click/ -d '{"action": "deploy", "project": "${{ github.repositoryUrl }}", "token": ""}'
+          curl -X POST http://deploy.cloud.aplicativo.click/ -d '{"action": "deploy", "repository": "${{ github.repositoryUrl }}", "token": ""}'
