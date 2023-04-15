@@ -144,11 +144,37 @@ OAUTH2_PROVIDER = {
     'SCOPES_BACKEND_CLASS': 'sloth.api.backends.Scopes'
 }
 
+if bool(os.environ.get('USE_REDIS')):
+    REDIS_HOST = os.environ.get('REDIS_HOST', 'redis')
+    REDIS_PORT = os.environ.get('REDIS_PORT', 6379)
+    REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD', None)
+    SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+    SESSION_CACHE_ALIAS = 'default'
+    CACHES = {
+        "default": {
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": "redis://{}:{}/1".format(REDIS_HOST, REDIS_PORT),
+            "OPTIONS": {
+                "CLIENT_CLASS": "django_redis.client.DefaultClient",
+                "PASSWORD": REDIS_PASSWORD
+            }
+        }
+    }
+
+if bool(os.environ.get('USE_POSTGRES')):
+    DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql_psycopg2'
+    DATABASES['default']['NAME'] = os.environ.get('DATABASE_NAME', 'database')
+    DATABASES['default']['USER'] = os.environ.get('DATABASE_USER', 'postgres')
+    DATABASES['default']['PASSWORD'] = os.environ.get('DATABASE_PASSWORD', 'password')
+    DATABASES['default']['HOST'] = os.environ.get('DATABASE_HOST', 'postgres')
+    DATABASES['default']['PORT'] = os.environ.get('DATABASE_PORT', '5432')
+
+
 SLOTH = {
     'NAME': 'PetShop',
     'ICON': '/static/images/logo.jpeg',
     'FAVICON': None,
-    'VERSION': 1.0,
+    'VERSION': '1.0.1',
 	'LOGIN': {
 		'LOGO': '/static/images/logo.jpeg',
 		'TITLE': 'PETSHOP',
@@ -156,9 +182,7 @@ SLOTH = {
 		'IMAGE': None,
 	},
 	'INCLUDE': {
-		'CSS': [
-            '/static/css/style2.css'
-        ],
+		'CSS': [],
 		'JS': [],
 	},
 	'ROLES':{
