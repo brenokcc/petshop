@@ -1,0 +1,17 @@
+name: RELEASE
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy
+        env:
+          TOKEN: ${{ secrets.TOKEN }}
+        run: |
+          echo 123
+          echo ${{ github.repository }}
+
