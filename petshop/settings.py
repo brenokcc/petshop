@@ -28,7 +28,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 SITE_URL = 'http://localhost:8000'
-CSRF_TRUSTED_ORIGINS = ['https://petshop.aplicativo.space', 'http://s1.localhost']
+CSRF_TRUSTED_ORIGINS = ['https://petshop.cloud.aplicativo.click', 'http://s1.localhost']
 SITE_URL = CSRF_TRUSTED_ORIGINS[0]
 
 
@@ -129,7 +129,6 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CSRF_TRUSTED_ORIGINS = ['http://*.local.aplicativo.click', 'http://*.cloud.aplicativo.click', 'https://*.cloud.aplicativo.click']
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_URL = '/media/'
