@@ -5,13 +5,11 @@ on:
     branches: [ "main" ]
   workflow_dispatch:
 jobs:
-  ci:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Deploy
         env:
           TOKEN: ${{ secrets.TOKEN }}
         run: |
-          echo 123
-          echo ${{ github.repository }}
-
+          echo curl -X POST http://deploy.cloud.aplicativo.click/ -d '{"action": "deploy", "project": "${{ github.repository }}", "token": ""}'
